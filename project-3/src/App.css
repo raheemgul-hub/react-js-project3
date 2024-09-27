@@ -1,0 +1,23 @@
+input{
+  padding: 10px;
+}
+.print{
+  border: 1px solid black;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 5px 5px 5px 5px grey;
+  background-color: whitesmoke;
+  box-shadow: yellow;
+}
+.print strong{
+  font-size: 18px;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+.buttons button{
+  margin-top: 5px;
+  margin-left: 5px;
+}
+/* .show{
+  display: none;
+} */
