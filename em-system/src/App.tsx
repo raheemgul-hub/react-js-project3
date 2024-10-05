@@ -1,7 +1,7 @@
 import  { useRef, useState,useEffect } from 'react'
 
 import './App.css'
-import Department from './department';
+import Department from './Department';
 
 function App() {
   const[first,setFirst]=useState('');
