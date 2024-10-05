@@ -1,15 +1,14 @@
 import { useRef, useState,useEffect } from "react"
 import './Department.css'
+
 function Department(){
  const [name,setName]=useState('');
  const [code,setCode]=useState('');
  const[description,setDescription]=useState('');
- const[department,setDepartment]=useState<department[]>([])
+ const[department,setDepartment]=useState<DepartmentType[]>([])
  const[formMode,setFormMode]=useState<number>(0)
- const [currentTaskId, setCurrentTaskId] = useState<number>();
+ const [currentTaskId, setCurrentTaskId] = useState<number>(0);
  let id =useRef<number>(0)
-
-
 
 
 
@@ -87,13 +86,13 @@ const deletedepartment =(id:number)=>{
 };
 //use effect//
 useEffect(() => {
-    
-  if (localStorage.getItem("edu")) {
-    console.log('work')
-    var old_data = JSON.parse(localStorage.edu);
+  const storedData = localStorage.getItem("edu");
+  if (storedData) {
+    console.log("work");
+    const old_data = JSON.parse(storedData);
     setDepartment(old_data);
-  }else{
-    console.log('not work')
+  } else {
+    console.log("not work");
   }
 }, []);
 
@@ -179,9 +178,9 @@ return(
 )
 }
 export default Department
-export interface department{
-    id:number
-    name:string;
-    code:string;
-    description:string;
-}  
+export interface DepartmentType {
+  id: number;
+  name: string;
+  code: string;
+  description: string;
+} 

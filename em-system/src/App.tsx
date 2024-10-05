@@ -1,7 +1,7 @@
 import  { useRef, useState,useEffect } from 'react'
 
 import './App.css'
-import Department from './Department';
+import Department, { DepartmentType } from './Department';
 
 function App() {
   const[first,setFirst]=useState('');
@@ -13,7 +13,20 @@ function App() {
   const [currentTaskId, setCurrentTaskId] = useState<number>();
   const[formMode,setFormMode]=useState(0)
   const [showdepartment, setShowDepartment] = useState(0);
-  let id =useRef<number>(1)
+  let id =useRef<number>(0)
+  const [departmentData, setDepartmentData] = useState<DepartmentType[]>([]);
+  useEffect(() => {
+    if (localStorage.getItem("edu")) {
+      console.log('work')
+      var old_data = JSON.parse(localStorage.edu);
+      setDepartmentData(old_data);
+    }else{
+      console.log('not work')
+    }
+  }, []);
+
+
+
 //eduaction//
 const[educationArray,setEducationsArray]=useState<education[]>([])
 const[title,setTitle]=useState('');
@@ -79,15 +92,16 @@ const setShowForm = () => {
   } 
   //---------get old data-----------//
   useEffect(() => {
-    
-    if (localStorage.getItem("emp")) {
-      console.log('work')
-      var old_data = JSON.parse(localStorage.emp);
+    const storedData = localStorage.getItem("emp");
+    if (storedData) {
+      console.log("work");
+      const old_data = JSON.parse(storedData);
       setEmployee(old_data);
-    }else{
-      console.log('not work')
+    } else {
+      console.log("not work");
     }
   }, []);
+  
   
   //-------edit------------//
   const editemployee =(id:number)=>{
@@ -125,19 +139,49 @@ const setShowForm = () => {
   const educationbutton=()=>{
     setFormMode(3)
   }
-  // ---------------------------
+  // -----------add-education button----------------
   const addeducation =()=>{
    setFormMode(4)
   }
+  //---open department button--------//
 const opendepartment=()=>{
  if (showdepartment==0){
   setShowDepartment(1);
   setFormMode(6)
  }
 }
+//---------save education--------//
+const saveeducation = () => {
+  if (formMode === 4) {
+    const newedu = {
+      id: id.current,
+      title,
+      level,
+      percentage
+    };
+    id.current++;
+    const neww = [...educationArray, newedu];
+    setEducationsArray(neww);
+    localStorage.setItem("emp", JSON.stringify(neww)); 
+    setFormMode(3)
+  }
+  
+};
+//------------delete education-----//
+const deleteeducation=(id:number)=>{
+  let index:number=(0);
+  educationArray.map((ed,i)=>{
+    if(ed.id === id){
+      index=i
+    }
+  });
+  educationArray.splice(index,1)
+  setEducationsArray([...educationArray])
+
+}
 
 
-  // employee[selectedEmployeeIndex].educations.push({ …… })
+ 
 
   return (
     <div className='main'>
@@ -219,7 +263,22 @@ const opendepartment=()=>{
                     value={phone}  
                     onChange={(e)=>setPhone(e.target.value)} />
                 </div>
-                <button type="submit" className="submit-button" onClick={addEmployees}>{formMode === 1 ? 'Save Task' : 'Save Changes'}</button>
+                <div className="form-group">
+                <label htmlFor="department">Department<span>*</span></label>
+                
+                <select className="form-select" aria-label="Default select example">
+                  <option selected disabled> Select Department</option>
+                  {departmentData.map(department => (
+                    <option key={department.id} value={department.id}>
+                      {department.name}
+                    </option>
+                  ))}
+                </select>
+                </div>
+                <div className='drop'>
+                  <button type="submit" className="submit-button" onClick={addEmployees}>{formMode === 1 ? 'Save Task' : 'Save Changes'}</button>
+                 
+                </div>
             </div>
       </div>
         {/* edit employee */}
@@ -301,6 +360,7 @@ const opendepartment=()=>{
                       <th>Address</th>
                       <th>Phone</th>
                       <th>Actions</th>
+                      <th>Department</th>
                     </tr>
                   </thead>
                   <tbody className="table-group-divider">
@@ -316,6 +376,11 @@ const opendepartment=()=>{
                     <i className="fa-solid fa-trash red"  onClick={()=>deleteemployee(e.id)}></i>
                     <button type='button' className='edu' onClick={educationbutton}>Education</button>
                     </td>
+                    {departmentData.map((d: DepartmentType) => (
+                    <td className={d.id === e.id? 'NN' : 'NN d-none'}>
+                    {d.name}
+                    </td>
+                  ))}
                   </tr>
                 ))}
               </tbody>
@@ -355,9 +420,9 @@ const opendepartment=()=>{
             />
           </div>
 
-          {/* <button type="button" className="btn btn-secondary" onClick={saveeducation}>
+          <button type="button" className="btn btn-secondary" onClick={saveeducation}>
             Add Education
-          </button> */}
+          </button>
         </div>
 
       {/* education table */}
@@ -378,15 +443,15 @@ const opendepartment=()=>{
                     </tr>
                   </thead>
                   <tbody className="table-group-divider">
-                {educationArray.map((edu) => (
-                  <tr className="table" key={edu.id}>
-                    <td>--</td>
-                    <td>--</td>
-                    <td>--</td>
-                    <td>--</td>
+                {educationArray.map((ed) => (
+                  <tr className="table" key={ed.id}>
+                    <td>{ed.id}</td>
+                    <td>{ed.title}</td>
+                    <td>{ed.level}</td>
+                    <td>{ed.percentage}</td>
                     <td className='icon'>
-                    <i className="fa-solid fa-pen-to-square yellow"  onClick={()=>editemployee(edu.id)}></i>
-                    <i className="fa-solid fa-trash red"  onClick={()=>deleteemployee(edu.id)}></i>
+                    <i className="fa-solid fa-pen-to-square yellow"  onClick={()=>editemployee(ed.id)}></i>
+                    <i className="fa-solid fa-trash red"  onClick={()=>deleteeducation(ed.id)}></i>
                     
                     </td>
                   </tr>
@@ -413,6 +478,6 @@ export interface employee{
 export interface education{
   id:number;
   title:string;
-  level:number;
-  percentage:number;
+  level:string;
+  percentage:string;
 }
