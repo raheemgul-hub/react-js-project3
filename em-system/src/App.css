@@ -147,3 +147,25 @@
 .tab{
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+.edu{
+  font-size: 10px;
+  border: 1px solid rgb(119, 112, 112);
+  background: #4b89a5;
+  color: white;
+}
+.but{
+  display: flex;
+  justify-content: space-between;
+  width: 350px;
+  margin-top: 15px;
+}
+.heading{
+  display: flex;
+  justify-content: space-between;
+  background-color: #ac94bb;
+  color: white;
+  width: 100%;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  padding: 10px;
+}
